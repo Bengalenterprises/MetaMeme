@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaMeme AI Meme Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+        }
+        #meme-result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MetaMeme AI Meme Generator</h1>
+    <input type="text" id="meme-text" placeholder="Enter your meme idea">
+    <button onclick="generateMeme()">Generate Meme</button>
+
+    <div id="meme-result">
+        <p id="meme-caption"></p>
+        <img id="meme-image" src="" alt="Meme Image" style="max-width: 100%; display: none;">
+    </div>
+
+    <script>
+        async function generateMeme() {
+            const text = document.getElementById("meme-text").value;
+            if (!text) {
+                alert("Please enter some text!");
+                return;
+            }
+
+            const response = await fetch("/generate-meme", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ text }),
+            });
+
+            const result = await response.json();
+            if (result.error) {
+                alert(result.error);
+                return;
+            }
+
+            document.getElementById("meme-caption").innerText = result.text;
+            const memeImage = document.getElementById("meme-image");
+            memeImage.src = result.image_url;
+            memeImage.style.display = "block";
+        }
+    </script>
+</body>
+</html>
